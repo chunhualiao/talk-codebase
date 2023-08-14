@@ -2,7 +2,7 @@ import glob
 import multiprocessing
 import os
 import sys
-
+import logging
 import tiktoken
 from git import Repo
 from langchain import FAISS
@@ -10,6 +10,9 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 from talk_codebase.consts import LOADER_MAPPING, EXCLUDE_FILES
 
+
+# Set up logging
+logging.basicConfig(filename=os.path.expanduser('~/.talk-codebase.log'), level=logging.INFO, filemode='a')
 
 def get_repo(root_dir):
     try:
@@ -54,6 +57,7 @@ def load_files(root_dir):
             for ext in LOADER_MAPPING:
                 if file_path.endswith(ext):
                     print('\r' + f'📂 Loading files: {file_path}')
+                    logging.info(f'📂 Loading files: {file_path}')  # Log to the file instead of print
                     args = LOADER_MAPPING[ext]['args']
                     loader = LOADER_MAPPING[ext]['loader'](file_path, *args)
                     futures.append(pool.apply_async(loader.load))

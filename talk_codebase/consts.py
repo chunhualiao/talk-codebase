@@ -8,7 +8,8 @@ EXCLUDE_DIRS = ['__pycache__', '.venv', '.git', '.idea', 'venv', 'env', 'node_mo
                 '.github', '.gitlab']
 ALLOW_FILES = ['.txt', '.js', '.mjs', '.ts', '.tsx', '.css', '.scss', '.less', '.html', '.htm', '.json', '.py',
                '.java', '.c', '.cpp', '.cs', '.go', '.php', '.rb', '.rs', '.swift', '.kt', '.scala', '.m', '.h',
-               '.sh', '.pl', '.pm', '.lua', '.sql', '.C', '.cc', '.adb', '.ads', '.hh','.hpp']
+               '.sh', '.pl', '.pm', '.lua', '.sql', '.C', '.cc', '.adb', '.ads', '.hh','.hpp', '.code', '.f90', '.f',
+               '.f03','.F90','.tex', '.f08', '.F', '.cxx']
 EXCLUDE_FILES = ['requirements.txt', 'package.json', 'package-lock.json', 'yarn.lock']
 MODEL_TYPES = {
     "OPENAI": "openai",
