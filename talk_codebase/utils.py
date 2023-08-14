@@ -10,6 +10,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 from talk_codebase.consts import LOADER_MAPPING, EXCLUDE_FILES
 
+from git.exc import GitCommandError
 
 # Set up logging
 logging.basicConfig(filename=os.path.expanduser('~/.talk-codebase.log'), level=logging.INFO, filemode='a')
@@ -22,13 +23,18 @@ def get_repo(root_dir):
 
 
 def is_ignored(path, root_dir):
-    repo = get_repo(root_dir)
-    if repo is None:
+    try: 
+        repo = get_repo(root_dir)
+        if repo is None:
+            return False
+        if not os.path.exists(path):
+            return False
+        ignored = repo.ignored(path)
+        return len(ignored) > 0
+    except GitCommandError as e:
+        print("Encountered Git error with path: ", path)
+        logging.error("Failed to check file {} in is_ignored(). Reason: {}".format(path, e))
         return False
-    if not os.path.exists(path):
-        return False
-    ignored = repo.ignored(path)
-    return len(ignored) > 0
 
 
 class StreamStdOut(StreamingStdOutCallbackHandler):
@@ -58,12 +64,20 @@ def load_files(root_dir):
                 if file_path.endswith(ext):
                     print('\r' + f'📂 Loading files: {file_path}')
                     logging.info(f'📂 Loading files: {file_path}')  # Log to the file instead of print
-                    args = LOADER_MAPPING[ext]['args']
-                    loader = LOADER_MAPPING[ext]['loader'](file_path, *args)
-                    futures.append(pool.apply_async(loader.load))
+                    try: 
+                        args = LOADER_MAPPING[ext]['args']
+                        loader = LOADER_MAPPING[ext]['loader'](file_path, *args)
+                        futures.append(pool.apply_async(loader.load))
+                    except Exception as e:
+                        logging.error("Failed to load file {}. Reason: {}".format(file_path, e))
+                        continue    
         docs = []
         for future in futures:
-            docs.extend(future.get())
+            try: 
+                docs.extend(future.get())
+            except Exception as e:
+                logging.error("Failed to get result from future. Reason: {}".format(e))   
+                continue
     return docs
 
 

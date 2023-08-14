@@ -5,7 +5,7 @@ from langchain.document_loaders import CSVLoader, UnstructuredWordDocumentLoader
     PDFMinerLoader, UnstructuredMarkdownLoader, TextLoader
 
 EXCLUDE_DIRS = ['__pycache__', '.venv', '.git', '.idea', 'venv', 'env', 'node_modules', 'dist', 'build', '.vscode',
-                '.github', '.gitlab']
+                '.github', '.gitlab', 'tests','scripts']
 ALLOW_FILES = ['.txt', '.js', '.mjs', '.ts', '.tsx', '.css', '.scss', '.less', '.html', '.htm', '.json', '.py',
                '.java', '.c', '.cpp', '.cs', '.go', '.php', '.rb', '.rs', '.swift', '.kt', '.scala', '.m', '.h',
                '.sh', '.pl', '.pm', '.lua', '.sql', '.C', '.cc', '.adb', '.ads', '.hh','.hpp', '.code', '.f90', '.f',
